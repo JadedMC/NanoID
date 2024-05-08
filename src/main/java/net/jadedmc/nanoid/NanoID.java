@@ -27,8 +27,6 @@
  */
 package net.jadedmc.nanoid;
 
-import com.sun.istack.internal.NotNull;
-
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -82,7 +80,7 @@ public class NanoID {
     public String toString() {
         return new String(bytes, StandardCharsets.UTF_8);
     }
-    public static NanoID fromString(@NotNull final String string) {
+    public static NanoID fromString(final String string) {
         return new NanoID(string.getBytes(StandardCharsets.UTF_8));
     }
 
