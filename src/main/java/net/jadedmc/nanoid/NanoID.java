@@ -84,13 +84,33 @@ public class NanoID {
     }
 
     /**
+     * Creates a NanoID with a specified settings object.
+     * Allows adding a prefix to the NanoID, as well as varying size.
+     * @param settings Settings of the NanoID.
+     */
+    public NanoID(final Settings settings) {
+        final Random random = new Random();
+
+        // Generate the size of the NanoID.
+        final int size;
+        if(settings.getMaximumSize() == settings.getMinimumSize()) {
+            size = settings.getMaximumSize();
+        }
+        else {
+            size = random.nextInt(settings.getMaximumSize() - settings.getMinimumSize()) + settings.getMaximumSize();
+        }
+
+        final String generatedID = settings.getPrefix() + generateNanoIDString(settings.getRandom(), size, settings.getAlphabet());
+        this.bytes = generatedID.getBytes(StandardCharsets.UTF_8);
+    }
+
+    /**
      * Converts the NanoID into it's byte form.
      * @return Byte representation of the NanoID.
      */
     public final byte[] asByteArray() {
         return bytes;
     }
-
 
     /**
      * Compares an object to this NanoID.
@@ -141,7 +161,7 @@ public class NanoID {
         return new NanoID(string.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static String generateNanoIDString(final Random random, final int size, final String alphabet) {
+    private static String generateNanoIDString(final Random random, final int size, final String alphabet) {
         final int mask = (2 << (int) Math.floor(Math.log(alphabet.length() - 1) / Math.log(2))) - 1;
         final int step = (int) Math.ceil(1.6 * mask * size / alphabet.length());
 
@@ -161,6 +181,64 @@ public class NanoID {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Stores settings for generating a NanoID.
+     * Allows adding more functionality, such as varying length and id prefixes.
+     * Uses slightly more performance.
+     */
+    public static class Settings {
+        private String prefix = "";
+        private String alphabet = DEFAULT_ALPHABET;
+        private int minimumSize = DEFAULT_SIZE;
+        private int maximumSize = DEFAULT_SIZE;
+        private Random random = DEFAULT_RANDOM;
+
+        public String getAlphabet() {
+            return alphabet;
+        }
+
+        public int getMaximumSize() {
+            return maximumSize;
+        }
+
+        public int getMinimumSize() {
+            return minimumSize;
+        }
+
+        public String getPrefix() {
+            return prefix;
+        }
+
+        public Random getRandom() {
+            return random;
+        }
+
+        public Settings setAlphabet(final String alphabet) {
+            this.alphabet = alphabet;
+            return this;
+        }
+
+        public Settings setPrefix(final String prefix) {
+            this.prefix = prefix;
+            return this;
+        }
+
+        public Settings setMaximumSize(final int maximumSize) {
+            this.maximumSize = maximumSize;
+            return this;
+        }
+
+        public Settings setMinimumSize(final int minimumSize) {
+            this.minimumSize = minimumSize;
+            return this;
+        }
+
+        public Settings setRandom(final Random random) {
+            this.random = random;
+            return this;
         }
     }
 }
