@@ -89,7 +89,7 @@ public class NanoID {
      * @param settings Settings of the NanoID.
      */
     public NanoID(final Settings settings) {
-        final Random random = new Random();
+        final Random random = settings.getRandom();
 
         // Generate the size of the NanoID.
         final int size;
@@ -109,7 +109,7 @@ public class NanoID {
      * @return Byte representation of the NanoID.
      */
     public final byte[] asByteArray() {
-        return bytes;
+        return this.bytes;
     }
 
     /**
